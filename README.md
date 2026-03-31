@@ -50,6 +50,8 @@ dotfiles/
 ├── zsh/                  # Zsh shell config (zinit, p10k, aliases)
 │   ├── .zshrc
 │   └── .zshenv
+├── tmux/                 # Tmux terminal multiplexer
+│   └── tmux.conf
 ├── bspwm/                # bspwm window manager
 │   └── bspwmrc
 ├── sxhkd/                # Keybindings for bspwm
@@ -323,6 +325,21 @@ python pytorch/torch-test.py
 | `super + alt + r`      | Restart bspwm            |
 | `super + Escape`       | Reload sxhkd             |
 | `Print`                | Screenshot (selection)   |
+
+## Tmux
+
+Prefix is **`Ctrl+a`**. Config lives in `tmux/tmux.conf` — symlink with `ln -sf ~/dotfiles/tmux/tmux.conf ~/.tmux.conf`.
+
+| Key                    | Action                   |
+|------------------------|--------------------------|
+| `Ctrl+a`               | Prefix (instead of Ctrl+b) |
+| `prefix + =`           | Vertical split           |
+| `prefix + -`           | Horizontal split         |
+| `prefix + h/j/k/l`    | Navigate panes (vim)     |
+| `prefix + H/J/K/L`    | Resize panes             |
+| `prefix + c`           | New window               |
+| `prefix + Enter`       | Copy mode (vi keys)      |
+| `prefix + r`           | Reload config            |
 
 ## Zsh
 
