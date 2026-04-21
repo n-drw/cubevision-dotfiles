@@ -249,6 +249,22 @@ install_pytorch() {
     info "Smoke test available at: $DOTFILES/pytorch/torch-test.py"
 }
 
+# ─── mmWave Radar ────────────────────────────────────────────────
+install_mmwave() {
+    section "mmWave Radar (RS-2944A / AWR2944)"
+
+    chmod +x "$DOTFILES/mmwave/setup-mmwave.sh"
+    info "mmWave setup script ready at:"
+    info "  $DOTFILES/mmwave/setup-mmwave.sh"
+    info ""
+    info "Run it manually when you're ready:"
+    info "  bash $DOTFILES/mmwave/setup-mmwave.sh               # basic driver setup"
+    info "  bash $DOTFILES/mmwave/setup-mmwave.sh --ros         # with ROS Melodic (Docker)"
+    info "  bash $DOTFILES/mmwave/setup-mmwave.sh --check       # check current state"
+    info ""
+    info "See mmwave/README.md for full documentation."
+}
+
 # ─── NanoClaw (OpenClaw) ────────────────────────────────────────
 install_nanoclaw() {
     section "NanoClaw (OpenClaw)"
@@ -285,7 +301,7 @@ install_git() {
 
 # ─── Main ─────────────────────────────────────────────────────────
 usage() {
-    echo "Usage: $0 [--all | --packages | --zsh | --ranger | --bspwm | --rust | --python | --js | --pytorch | --nanoclaw]"
+    echo "Usage: $0 [--all | --packages | --zsh | --ranger | --bspwm | --rust | --python | --js | --pytorch | --mmwave | --nanoclaw]"
     echo "  No arguments = install everything"
 }
 
@@ -307,6 +323,7 @@ main() {
         install_python
         install_js
         install_pytorch
+        install_mmwave
         install_nanoclaw
     else
         for arg in "$@"; do
@@ -319,6 +336,7 @@ main() {
                 --python)   install_python ;;
                 --js)       install_js ;;
                 --pytorch)  install_pytorch ;;
+                --mmwave)   install_mmwave ;;
                 --nanoclaw) install_nanoclaw ;;
                 --git)      install_git ;;
                 --help|-h)  usage; exit 0 ;;
@@ -336,7 +354,8 @@ main() {
     echo "║  2. Run 'p10k configure' to set up your prompt              ║"
     echo "║  3. Select bspwm from your display manager                   ║"
     echo "║  4. Run the PyTorch installer when ready                     ║"
-    echo "║  5. Run nanoclaw/setup-openclaw.sh for AI gateway             ║"
+    echo "║  5. Run mmwave/setup-mmwave.sh for radar driver              ║"
+    echo "║  6. Run nanoclaw/setup-openclaw.sh for AI gateway             ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
 }
 

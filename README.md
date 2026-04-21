@@ -82,6 +82,10 @@ dotfiles/
 ├── pytorch/              # PyTorch/TorchVision Jetson installer
 │   ├── setup-pytorch-jetson.sh
 │   └── torch-test.py
+├── mmwave/               # mmWave radar driver (RS-2944A / AWR2944)
+│   ├── README.md
+│   ├── 99-mmwave-radar.rules  # udev rules for CP2105 USB-UART
+│   └── setup-mmwave.sh        # Driver + deps installer
 ├── dev/                  # Nix flake dev environment
 │   ├── README.md
 │   ├── flake.nix
@@ -149,6 +153,7 @@ chmod +x scripts/install.sh
 ./scripts/install.sh --python    # pip, ruff config
 ./scripts/install.sh --js        # nvm, npm, eslint, prettier
 ./scripts/install.sh --pytorch   # prints PyTorch install instructions
+./scripts/install.sh --mmwave    # mmWave radar driver setup
 ./scripts/install.sh --packages  # apt packages only
 ```
 
@@ -288,6 +293,43 @@ bash neo4j/setup-neo4j.sh --apoc
 ```
 
 Browser UI at `http://127.0.0.1:7474`, Bolt at `bolt://127.0.0.1:7687`. Heap capped at 1 GB, page cache at 512 MB. See `neo4j/README.md`.
+
+## mmWave Radar (RS-2944A)
+
+Driver setup for the **D3 DesignCore RS-2944A** (TI AWR2944) 77 GHz mmWave radar sensor via the CP2105 USB-to-UART bridge.
+
+```bash
+# Full setup: kernel module, udev rules, dialout group, Python venv
+bash mmwave/setup-mmwave.sh
+
+# Check current driver state
+bash mmwave/setup-mmwave.sh --check
+
+# With ROS Melodic desktop-full (Docker) + ti_mmwave_rospkg
+bash mmwave/setup-mmwave.sh --ros
+
+# Custom Python venv path
+bash mmwave/setup-mmwave.sh --venv ~/.venvs/myradar
+```
+
+This will:
+1. Load the `cp210x` kernel module (Silicon Labs CP2105) and make it boot-persistent
+2. Install udev rules creating stable symlinks: `/dev/radar_cfg` and `/dev/radar_data`
+3. Add the user to the `dialout` group for serial port access
+4. Create a Python venv with `pyserial`, `numpy`, `websockets`, `scipy`
+5. (Optional) Build a Docker image with `ros-melodic-desktop-full` + [ti_mmwave_rospkg](https://github.com/radar-lab/ti_mmwave_rospkg)
+
+> **Note:** ROS Melodic targets Ubuntu 18.04 (Bionic) and cannot be installed natively on
+> Ubuntu 22.04. The `--ros` flag uses Docker with device passthrough for serial port access.
+
+After setup, verify:
+```bash
+lsusb | grep "10c4"           # CP2105 detected
+ls -la /dev/radar_*           # symlinks present
+screen /dev/radar_cfg 115200  # CLI access (Ctrl+A K to exit)
+```
+
+See `mmwave/README.md` for detailed hardware info, troubleshooting, and TI references.
 
 ## PyTorch on Jetson
 
